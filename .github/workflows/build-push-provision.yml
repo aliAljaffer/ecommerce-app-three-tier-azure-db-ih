@@ -69,7 +69,7 @@ jobs:
               uses: docker/build-push-action@v6
               with:
                   push: true
-                  context: ./ecommerce-app-frontend
+                  context: ./ecommerce-app-backend
                   tags: |
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:latest
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:${{env.COMMIT_VERSION}}
