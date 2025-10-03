@@ -87,15 +87,16 @@ jobs:
             - name: Setup Terraform
               uses: hashicorp/setup-terraform@v3
 
-            - name: Export the image names
-              run: |
-                  echo "fe_image_name=${{env.fe_image_name}}:latest" >> $GITHUB_ENV
-                  echo "be_image_name=${{env.be_image_name}}:latest" >> $GITHUB_ENV
-
             - name: Azure Login
               uses: azure/login@v2
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Change to Terraform directory
+              run: cd terraform
+
+            - name: Terraform initialize
+              run: terraform init
 
             - name: Terraform apply
               run: terraform apply
