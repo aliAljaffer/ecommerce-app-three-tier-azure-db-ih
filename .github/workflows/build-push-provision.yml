@@ -73,3 +73,29 @@ jobs:
                   tags: |
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:latest
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:${{env.COMMIT_VERSION}}
+
+    provision_with_terraform:
+        runs-on: ubuntu-latest
+        needs: [build_and_push_be, build_and_push_fe]
+        env:
+            my_name: ${{secrets.NAME}}
+            subscription_id: ${{secrets.subscription_id}}
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v5
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+
+            - name: Export the image names
+              run: |
+                  echo "fe_image_name=${{env.fe_image_name}}:latest" >> $GITHUB_ENV
+                  echo "be_image_name=${{env.be_image_name}}:latest" >> $GITHUB_ENV
+
+            - name: Azure Login
+              uses: azure/login@v2
+              with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Terraform apply
+              run: terraform apply
