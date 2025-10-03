@@ -19,3 +19,7 @@ variable "be_image_tag" {
   type    = string
   default = "latest"
 }
+variable "my_name" {
+  type    = string
+  default = "devops-ali"
+}
