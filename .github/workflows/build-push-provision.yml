@@ -100,7 +100,7 @@ jobs:
             - name: Add TF_VAR_ to image names
               run: |
                   echo "TF_VAR_be_image_name=${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}" >> $GITHUB_ENV
-                  echo "TF_VAR_be_image_name=${{ secrets.DOCKERHUB_USERNAME }}/${{env.fe_image_name}}" >> $GITHUB_ENV
+                  echo "TF_VAR_fe_image_name=${{ secrets.DOCKERHUB_USERNAME }}/${{env.fe_image_name}}" >> $GITHUB_ENV
                   echo "TF_VAR_be_image_tag=${{env.COMMIT_VERSION}}" >> $GITHUB_ENV
                   echo "TF_VAR_fe_image_tag=${{env.COMMIT_VERSION}}" >> $GITHUB_ENV
 
