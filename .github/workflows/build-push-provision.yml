@@ -92,11 +92,8 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-            - name: Change to Terraform directory
-              run: cd terraform
-
             - name: Terraform initialize
-              run: terraform init
+              run: cd terraform && terraform init
 
             - name: Terraform apply
-              run: terraform apply
+              run: cd terraform && terraform apply
