@@ -116,3 +116,5 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+.terraform*
+**/*.tfstate*

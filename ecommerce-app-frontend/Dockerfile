@@ -1,5 +1,5 @@
 # Multi-stage build for React app
-FROM node:18-alpine as build
+FROM node:22-alpine as build
 
 # Set working directory
 WORKDIR /app
@@ -13,6 +13,9 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Building with temp placeholder
+ENV REACT_APP_API_URL="API_URL_PLACEHOLDER"
+
 # Build the application
 RUN npm run build
 
@@ -23,8 +26,12 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.config
 
+RUN echo '#!/bin/sh' > /entrypoint.sh && \
+    echo 'find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|API_URL_PLACEHOLDER|${REACT_APP_API_URL}|g" {} +' >> /entrypoint.sh && \
+    echo 'exec nginx -g "daemon off;"' >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 # Expose port
 EXPOSE 80
 
@@ -33,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
 
 # Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT [ "/entrypoint.sh" ]
