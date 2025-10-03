@@ -78,8 +78,8 @@ jobs:
         runs-on: ubuntu-latest
         needs: [build_and_push_be, build_and_push_fe]
         env:
-            my_name: ${{secrets.NAME}}
-            subscription_id: ${{secrets.subscription_id}}
+            TF_VAR_my_name: ${{secrets.NAME}}
+            TF_VAR_subscription_id: ${{secrets.subscription_id}}
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v5
@@ -91,6 +91,11 @@ jobs:
               uses: azure/login@v2
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+            - name: Add TF_VAR_ to image names
+              run: |
+                  echo "TF_VAR_be_image_name=${{env.be_image_name}}:latest" >> $GITHUB_ENV
+                  echo "TF_VAR_fe_image_name=${{env.fe_image_name}}:latest" >> $GITHUB_ENV
 
             - name: Terraform initialize
               run: cd terraform && terraform init
