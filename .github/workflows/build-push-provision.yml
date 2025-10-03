@@ -15,8 +15,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Get the Git commit
-              run: echo 'VERSION=$(git rev-parse --short HEAD)' >> $GITHUB_ENV
-
+              run: |
+                  VERSION=$(git rev-parse --short HEAD)
+                  echo 'COMMIT_VERSION=$VERSION' >> $GITHUB_ENV
             - name: Checkout the repository
               uses: actions/checkout@v5
 
@@ -39,12 +40,14 @@ jobs:
                   context: ./ecommerce-app-frontend
                   tags: |
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.fe_image_name}}:latest
-                      ${{ secrets.DOCKERHUB_USERNAME }}/${{env.fe_image_name}}:${{env.VERSION}}
+                      ${{ secrets.DOCKERHUB_USERNAME }}/${{env.fe_image_name}}:${{env.COMMIT_VERSION}}
     build_and_push_be:
         runs-on: ubuntu-latest
         steps:
             - name: Get the Git commit
-              run: echo 'VERSION=$(git rev-parse --short HEAD)' >> $GITHUB_ENV
+              run: |
+                  VERSION=$(git rev-parse --short HEAD)
+                  echo 'COMMIT_VERSION=$VERSION' >> $GITHUB_ENV
 
             - name: Checkout the repository
               uses: actions/checkout@v5
@@ -68,4 +71,4 @@ jobs:
                   context: ./ecommerce-app-frontend
                   tags: |
                       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:latest
-                      ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:${{env.VERSION}}
+                      ${{ secrets.DOCKERHUB_USERNAME }}/${{env.be_image_name}}:${{env.COMMIT_VERSION}}
